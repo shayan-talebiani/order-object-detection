@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 import json
 
-IMAGE_PATH = "images/1"
+IMAGE_PATH = "images/6"
 
 def main():
     # Load your trained model
@@ -75,10 +75,24 @@ class OrderObjectDetection:
                         return self.order
         
     def update_order(self, point):
+        point_in_objects = []
         for object in self.process_results:
-
             if self.check_cls(point, object) and self.check_new_object(object) :
-                self.order.append(object["id"])
+                point_in_objects.append(object["id"])
+                #self.order.append(object["id"])
+        if len(point_in_objects) == 1:
+            self.order.append(point_in_objects[0])
+        elif len(point_in_objects) > 1:
+            state = False
+            for id1 in point_in_objects:
+                state = True
+                for id2 in point_in_objects:
+                    if not self.object_1_in_2(id1,id2):
+                        state = False
+                        break
+                if state == True:
+                    self.order.append(id1)
+                    break
 
     def check_new_object(self, object):
         for id in self.order:
@@ -95,6 +109,13 @@ class OrderObjectDetection:
             if key == "points":
                 return True
         return False
+
+    def object_1_in_2(self, id1, id2):
+        if (self.process_results[id1]["xyxy"][0] >= self.process_results[id2]["xyxy"][0] and 
+            self.process_results[id1]["xyxy"][1] >= self.process_results[id2]["xyxy"][1] and 
+            self.process_results[id1]["xyxy"][2] <= self.process_results[id2]["xyxy"][2] and 
+            self.process_results[id1]["xyxy"][3] <= self.process_results[id2]["xyxy"][3]):
+            return True
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 7
+names: ['Bird', 'Cloud', 'Flower', 'House', 'Person', 'Sun', 'Tree']
+
+roboflow:
+  workspace: aiclinic
+  project: htp_main
+  version: 4
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/aiclinic/htp_main/dataset/4
