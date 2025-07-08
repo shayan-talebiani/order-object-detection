@@ -1,8 +1,12 @@
 from ultralytics import YOLO
 import json
 
-IMAGE_PATH = "images/8"
-EPSILON = 3
+IMAGE_PATH = "images/1"
+JSON_NAME = "57.json"
+
+CLASS_NAME = ['Bird', 'Cloud', 'Flower', 'House', 'Person', 'Sun', 'Tree']
+
+EPSILON = 5
 
 def main():
     # Load your trained model
@@ -14,13 +18,21 @@ def main():
     images_loader = ImagesLoader(results)
     process_results = images_loader.get_process_results()
 
-    metadata_loader = MetadataLoader("57.json")
+    metadata_loader = MetadataLoader(JSON_NAME)
     metadata = metadata_loader.get_metadata()
 
     order_object_detection = OrderObjectDetection(process_results, metadata)
     order = order_object_detection.get_order()
     
+    objects_list = []
+
+    for r in process_results[0]:
+        if r["id"] in order :
+            order_id = order.index(r["id"])
+            objects_list.append({"ID":r["id"],"cls_ID":r["cls_id"],"cls_name":CLASS_NAME[r["cls_id"]],"Order":order_id})
+
     print(order)
+    print(objects_list)
 
 class ImagesLoader:
     def __init__(self, results):
