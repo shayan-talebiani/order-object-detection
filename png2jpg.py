@@ -1,7 +1,7 @@
 from PIL import Image
 import os
 
-IMAGE_PATH = "images/7"
+IMAGE_PATH = "images/8"
 
 def convert_png_to_jpg_with_white_bg(png_path, output_path=None):
     # Open the PNG image

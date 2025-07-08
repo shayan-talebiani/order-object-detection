@@ -1,7 +1,8 @@
 from ultralytics import YOLO
 import json
 
-IMAGE_PATH = "images/6"
+IMAGE_PATH = "images/8"
+EPSILON = 3
 
 def main():
     # Load your trained model
@@ -87,9 +88,11 @@ class OrderObjectDetection:
             for id1 in point_in_objects:
                 state = True
                 for id2 in point_in_objects:
-                    if not self.object_1_in_2(id1,id2):
-                        state = False
-                        break
+                    if id1 != id2:
+                        if not self.object_1_in_2(id1,id2):
+                            state = False
+
+                            break
                 if state == True:
                     self.order.append(id1)
                     break
@@ -111,11 +114,12 @@ class OrderObjectDetection:
         return False
 
     def object_1_in_2(self, id1, id2):
-        if (self.process_results[id1]["xyxy"][0] >= self.process_results[id2]["xyxy"][0] and 
-            self.process_results[id1]["xyxy"][1] >= self.process_results[id2]["xyxy"][1] and 
-            self.process_results[id1]["xyxy"][2] <= self.process_results[id2]["xyxy"][2] and 
-            self.process_results[id1]["xyxy"][3] <= self.process_results[id2]["xyxy"][3]):
+        if (self.process_results[id1]["xyxy"][0] >= self.process_results[id2]["xyxy"][0] - EPSILON and 
+            self.process_results[id1]["xyxy"][1] >= self.process_results[id2]["xyxy"][1] - EPSILON  and 
+            self.process_results[id1]["xyxy"][2] <= self.process_results[id2]["xyxy"][2] + EPSILON and 
+            self.process_results[id1]["xyxy"][3] <= self.process_results[id2]["xyxy"][3] + EPSILON ):
+            
             return True
-
+            
 if __name__ == "__main__":
     main()
